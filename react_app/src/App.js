@@ -3,12 +3,15 @@ import { useEffect, useState } from "react";
 function App() {
   const [rooms, setRooms] = useState([]);
 
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/rooms/")
-      .then(res => res.json())
-      .then(data => setRooms(data))
-      .catch(err => console.error(err));
-  }, []);
+  // Use environment variable from Render
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:8000/api";
+
+useEffect(() => {
+  fetch(`${API_BASE_URL}/rooms/`)
+    .then((res) => res.json())
+    .then((data) => setRooms(data))
+    .catch((err) => console.error("Fetch error:", err));
+}, [API_BASE_URL]);
 
   return (
     <div style={{ padding: 20 }}>
@@ -17,7 +20,7 @@ function App() {
         <p>No rooms found.</p>
       ) : (
         <ul>
-          {rooms.map(room => (
+          {rooms.map((room) => (
             <li key={room.id}>
               <strong>{room.name}</strong> — ${room.price}
             </li>
